@@ -15,12 +15,22 @@ function updateDisplay() {
 }
 
 function appendNumber(number) {
-  if (number === '.' && current.contains('.')) return;
+  if (number === '.' && current.includes('.')) return;
   current = current.toString() + number.toString();
 }
 
 function appendOperation(operation) {
-  if (current === '') return;
+  if (
+    current === '' ||
+    current.includes('+') ||
+    current.includes('-') ||
+    current.includes('*') ||
+    current.includes('÷')
+  )
+    return;
+  if (previous !== '') {
+    calculate();
+  }
   current = current.toString() + operation.toString();
   previous = current;
   current = '';
@@ -40,19 +50,23 @@ function clearAll() {
 }
 
 function calculate() {
-  if (previous.slice(-1) === '+') {
-    current = (parseFloat(current) + parseFloat(previous)).toString();
+  if (current === '') {
+    return;
+  } else {
+    if (previous.slice(-1) === '+') {
+      current = (parseFloat(current) + parseFloat(previous)).toString();
+    }
+    if (previous.slice(-1) === '-') {
+      current = (parseFloat(previous) - parseFloat(current)).toString();
+    }
+    if (previous.slice(-1) === '*') {
+      current = (parseFloat(current) * parseFloat(previous)).toString();
+    }
+    if (previous.slice(-1) === '÷') {
+      current = (parseFloat(previous) / parseFloat(current)).toString();
+    }
+    previous = '';
   }
-  if (previous.slice(-1) === '-') {
-    current = (parseFloat(previous) - parseFloat(current)).toString();
-  }
-  if (previous.slice(-1) === '*') {
-    current = (parseFloat(current) * parseFloat(previous)).toString();
-  }
-  if (previous.slice(-1) === '÷') {
-    current = (parseFloat(previous) / parseFloat(current)).toString();
-  }
-  previous = '';
 }
 
 numberButtons.forEach((button) => {
