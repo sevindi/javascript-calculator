@@ -1,37 +1,58 @@
 const numberButtons = document.querySelectorAll('.number');
 const operationButtons = document.querySelectorAll('.operation');
-const displayArea = document.querySelector('.display');
+const currentArea = document.querySelector('.current');
+const previousArea = document.querySelector('.previous');
 const clearButton = document.querySelector('.clear');
 const deleteButton = document.querySelector('.delete');
 const equalsButton = document.querySelector('.equals');
 
-let displayValue = '';
+let current = '';
+let previous = '';
 
 function updateDisplay() {
-  displayArea.innerHTML = displayValue;
+  currentArea.innerHTML = current;
+  previousArea.innerHTML = previous;
 }
 
 function appendNumber(number) {
-  if (number === '.' && number === displayValue.slice(-1)) return;
-  displayValue = displayValue.toString() + number.toString();
+  if (number === '.' && current.contains('.')) return;
+  current = current.toString() + number.toString();
 }
 
 function appendOperation(operation) {
-  if (displayValue === '') return;
-  if (operation === displayValue.slice(-1)) return;
-  displayValue = displayValue.toString() + operation.toString();
+  if (current === '') return;
+  current = current.toString() + operation.toString();
+  previous = current;
+  current = '';
 }
 
 function deleteChar() {
-  displayValue = displayValue.slice(0, -1);
+  current = current.slice(0, -1);
+  if (current === '') {
+    current = previous;
+    previous = '';
+  }
 }
 
 function clearAll() {
-  displayValue = '';
+  current = '';
+  previous = '';
 }
 
 function calculate() {
-  displayValue = eval(displayValue).toString();
+  if (previous.slice(-1) === '+') {
+    current = (parseFloat(current) + parseFloat(previous)).toString();
+  }
+  if (previous.slice(-1) === '-') {
+    current = (parseFloat(previous) - parseFloat(current)).toString();
+  }
+  if (previous.slice(-1) === '*') {
+    current = (parseFloat(current) * parseFloat(previous)).toString();
+  }
+  if (previous.slice(-1) === '÷') {
+    current = (parseFloat(previous) / parseFloat(current)).toString();
+  }
+  previous = '';
 }
 
 numberButtons.forEach((button) => {
